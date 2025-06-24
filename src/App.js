@@ -21,6 +21,8 @@ export default function App() {
     );
   });
 
+  const [keyStatuses, setKeyStatuses] = useState({});
+
   const validateWord = (guess) => {
     let result = [];
     let guessChar = guess.split("");
@@ -70,6 +72,19 @@ export default function App() {
     updatedGuesses[idx] = validated;
     setGuesses(updatedGuesses);
     setCurrentGuess("");
+
+    // Update keyStatuses
+    const newKeyStatuses = { ...keyStatuses };
+    validated.forEach(({ letter, status }) => {
+      const currentStatus = newKeyStatuses[letter];
+      if (
+        currentStatus !== "correct" &&
+        (currentStatus !== "present" || status === "correct")
+      ) {
+        newKeyStatuses[letter] = status;
+      }
+    });
+    setKeyStatuses(newKeyStatuses);
 
     const isCorrect = guessUpper === solution;
     const isLast = idx === guesses.length - 1;
@@ -153,7 +168,7 @@ export default function App() {
         })}
       </div>
 
-      <Keyboard onKeyPress={handleVirtualKeyPress} />
+      <Keyboard onKeyPress={handleVirtualKeyPress} keyStatuses={keyStatuses} />
 
       <div className="result">
         {gameStatus === "won" && (
@@ -196,21 +211,33 @@ function Line({ guess }) {
 
 const KEYS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
-function Keyboard({ onKeyPress }) {
+function Keyboard({ onKeyPress, keyStatuses }) {
   return (
     <div className="keyboard">
       {KEYS.map((row, i) => (
         <div key={i} className="keyboard-row">
-          {row.split("").map((key) => (
-            <button key={key} onClick={() => onKeyPress(key)}>
-              {key}
-            </button>
-          ))}
+          {row.split("").map((key) => {
+            const status = keyStatuses[key];
+            const className = `key ${status || ""}`;
+            return (
+              <button
+                key={key}
+                className={className}
+                onClick={() => onKeyPress(key)}
+              >
+                {key}
+              </button>
+            );
+          })}
         </div>
       ))}
       <div className="keyboard-row">
-        <button onClick={() => onKeyPress("ENTER")}>ENTER</button>
-        <button onClick={() => onKeyPress("BACKSPACE")}>⌫</button>
+        <button className="key special" onClick={() => onKeyPress("ENTER")}>
+          ENTER
+        </button>
+        <button className="key special" onClick={() => onKeyPress("BACKSPACE")}>
+          ⌫
+        </button>
       </div>
     </div>
   );

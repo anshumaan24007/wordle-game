@@ -117,3 +117,14 @@ body {
   font-size: 0.9rem;
   color: #ccc;
 }
+.keyboard button.correct {
+  background-color: #538d4e;
+}
+
+.keyboard button.present {
+  background-color: #b59f3b;
+}
+
+.keyboard button.absent {
+  background-color: #3a3a3c;
+}
