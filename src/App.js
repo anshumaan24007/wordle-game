@@ -1,5 +1,6 @@
 import "./styles.css";
 import { useState, useEffect } from "react";
+import { wordsData } from "./wordsData";
 
 const API_URL = "https://api.frontendexpert.io/api/fe/wordle-words";
 const WORD_LENGTH = 5;
@@ -136,8 +137,8 @@ export default function App() {
 
   useEffect(() => {
     const fetchWord = async () => {
-      const response = await fetch(API_URL);
-      const data = await response.json();
+      // const response = await fetch(API_URL);
+      const data = wordsData;
       setSolution(data[Math.floor(Math.random() * data.length)]);
     };
     fetchWord();
